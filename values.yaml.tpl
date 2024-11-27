@@ -161,21 +161,15 @@ ingress:
 
   # -- Array of host objects
   hosts:
-    - host: vmauth.${domain_name}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: victoria-metrics-auth
-            port:
-              number: 8427
+    - name: vmauth.${domain_name}
+      path: /
+      port: http
+
   # -- Array of TLS objects
   tls:
     - secretName: vmauth-${dash_domain_name}
       hosts:
-        - vmauth.${domain_name}
+        - grafana.${domain_name}
 
   # -- Ingress controller class name
   ingressClassName: "nginx"
@@ -277,7 +271,7 @@ secretName: ""
 config:
   # Arbitrary number of usernames may be put here.
   # Usernames must be unique.
-  users:
+  # users:
     # The user for querying local single-node VictoriaMetrics.
     # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
     # will be routed to http://localhost:8428 .
