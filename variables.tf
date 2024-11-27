@@ -24,7 +24,7 @@ variable "helm_chart_version" {
 variable "ingress_enabled" {
   type        = bool
   description = "Victoria Auth Ingress Enabled"
-  default     = "false"
+  default     = "true"
 }
 variable "domain_name" {
   type        = string
