@@ -279,6 +279,7 @@ config:
      - username: "victoria-metrics-server"
        url_prefix: "http://victoria-metrics-single-server.victoria-system.svc.cluster.local:8428"
 
+    #Other example
     # The user for querying account 123 in VictoriaMetrics cluster
     # See https://github.com/VictoriaMetrics/VictoriaMetrics/blob/cluster/README.md#url-format
     # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
