@@ -277,9 +277,8 @@ config:
     # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
     # will be routed to http://localhost:8428 .
     # For example, http://vmauth:8427/api/v1/query is routed to http://localhost:8428/api/v1/query
-    #  - username: "local-single-node"
-    #    password: "***"
-    #    url_prefix: "http://localhost:8428"
+     - username: "victoria-metrics-server"
+       url_prefix: "http://victoria-metrics-single-server.victoria-system.svc.cluster.local:8428"
 
     # The user for querying account 123 in VictoriaMetrics cluster
     # See https://github.com/VictoriaMetrics/VictoriaMetrics/blob/cluster/README.md#url-format
