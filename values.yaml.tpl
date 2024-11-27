@@ -271,7 +271,7 @@ secretName: ""
 config:
   # Arbitrary number of usernames may be put here.
   # Usernames must be unique.
-  # users:
+  users:
     # The user for querying local single-node VictoriaMetrics.
     # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
     # will be routed to http://localhost:8428 .
