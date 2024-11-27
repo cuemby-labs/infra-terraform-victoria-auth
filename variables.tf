@@ -5,7 +5,7 @@
 variable "helm_release_name" {
   description = "The name of the Helm release."
   type        = string
-  default     = "victoria-logs-single"
+  default     = "victoria-metrics-auth"
 }
 
 variable "namespace_name" {
@@ -15,9 +15,9 @@ variable "namespace_name" {
 }
 
 variable "helm_chart_version" {
-  description = "The version of the victoria-logs-single Helm chart."
+  description = "The version of the victoria-metrics-auth Helm chart."
   type        = string
-  default     = "0.5.2"
+  default     = "0.4.13"
 }
 
 # Victoria Auth Ingress
