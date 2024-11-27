@@ -1,0 +1,334 @@
+# Default values for victoria-metrics-auth.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  # -- Image pull secrets, that can be shared across multiple helm charts
+  imagePullSecrets: []
+  image:
+    # -- Image registry, that can be shared across multiple helm charts
+    registry: ""
+  # -- Openshift security context compatibility configuration
+  compatibility:
+    openshift:
+      adaptSecurityContext: "auto"
+  cluster:
+    # -- K8s cluster domain suffix, uses for building storage pods' FQDN. Details are [here](https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/)
+    dnsDomain: cluster.local.
+      
+# -- Number of replicas of vmauth
+replicaCount: 1
+
+image:
+  # -- Image registry
+  registry: ""
+  # -- Victoria Metrics Auth Docker repository and image name
+  repository: victoriametrics/vmauth
+  # -- Tag of Docker image
+  tag: "" # rewrites Chart.AppVersion
+  # -- Variant of the image to use.
+  # e.g. enterprise, scratch
+  variant: ""
+  # -- Pull policy of Docker image
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets
+imagePullSecrets: []
+# -- Override chart name
+nameOverride: ""
+# -- Override resources fullname
+fullnameOverride: ""
+
+containerWorkingDir: "/"
+
+ # -- Init containers for vmauth
+initContainers:
+  []
+  # - name: example
+  #   image: example-image
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+  name:
+
+# -- See `kubectl explain poddisruptionbudget.spec` for more. Official guide is [here](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1
+  labels: {}
+
+# -- Extra command line arguments for container of component
+extraArgs:
+  envflag.enable: "true"
+  envflag.prefix: VM_
+  loggerFormat: json
+
+# -- Additional environment variables (ex.: secret tokens, flags). Check [here](https://docs.victoriametrics.com/#environment-variables) for details
+env: []
+
+# -- Specify alternative source for env variables
+envFrom: []
+  #- configMapRef:
+  #    name: special-config
+
+# -- Additional hostPath mounts
+extraHostPathMounts: []
+  # - name: certs-dir
+  #   mountPath: /etc/kubernetes/certs
+  #   subPath: ""
+  #   hostPath: /etc/kubernetes/certs
+  #   readOnly: true
+
+# -- Extra Volumes for the pod
+extraVolumes: []
+  # - name: example
+  #   configMap:
+  #     name: example
+
+# -- Extra Volume Mounts for the container
+extraVolumeMounts: []
+  # - name: example
+  #   mountPath: /example
+
+# -- Extra containers to run in a pod with vmauth
+extraContainers:
+  []
+  # - name: config-reloader
+  #   image: reloader-image
+
+# -- Pod's security context. Details are [here](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+podSecurityContext:
+  enabled: true
+  # fsGroup: 2000
+
+# -- Container security context. Check [here](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for details.
+securityContext:
+  enabled: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  # -- Enable vmauth service
+  enabled: true
+  # -- Service annotations
+  annotations: {}
+  # -- Service labels
+  extraLabels: {}
+  # -- Service ClusterIP
+  clusterIP: ""
+  # -- Service external IPs. Check [here](https://kubernetes.io/docs/user-guide/services/#external-ips) for details
+  externalIPs: []
+  # -- Service load balacner IP
+  loadBalancerIP: ""
+  # -- Load balancer source range
+  loadBalancerSourceRanges: []
+  # -- Service port
+  servicePort: 8427
+  # nodePort: 30000
+  # -- Service type
+  type: ClusterIP
+  # -- Service external traffic policy. Check [here](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip) for details
+  externalTrafficPolicy: ""
+  # -- Health check node port for a service. Check [here](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip) for details
+  healthCheckNodePort: ""
+  # -- Service IP family policy. Check [here](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) for details.
+  ipFamilyPolicy: ""
+  # -- List of service IP families. Check [here](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) for details.
+  ipFamilies: []
+
+ingress:
+  # -- Enable deployment of ingress for vmauth component
+  enabled: ${ingress_enabled}
+
+  # -- Ingress annotations
+  annotations:
+    cert-manager.io/issuer: ${issuer_name}
+    cert-manager.io/issuer-kind: ${issuer_kind}
+    cert-manager.io/issuer-group: cert-manager.k8s.cloudflare.com
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: 'true'
+    external-dns.alpha.kubernetes.io/hostname: vmauth.${domain_name}
+
+  # -- Ingress extra labels
+  extraLabels: {}
+
+  # -- Array of host objects
+  hosts:
+    - name: vmauth.${domain_name}
+      path:
+        - /
+      port: http
+
+  # -- Array of TLS objects
+  tls:
+    - secretName: vmauth-${dash_domain_name}
+      hosts:
+        - grafana.${domain_name}
+
+  # -- Ingress controller class name
+  ingressClassName: "nginx"
+
+  # -- Ingress path type
+  pathType: Prefix
+
+ingressInternal:
+  # -- Enable deployment of internal ingress for vmauth component
+  enabled: false
+
+  # -- Ingress annotations
+  annotations: {}
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  # -- Ingress extra labels
+  extraLabels: {}
+
+  # -- Array of host objects
+  hosts:
+    - name: vmauth.local
+      path:
+        - /
+      port: http
+
+  # -- Array of TLS objects
+  tls: []
+  #   - secretName: vmauth-ingress-tls
+  #     hosts:
+  #       - vmauth.local
+
+  # -- Ingress controller class name
+  ingressClassName: ""
+
+  # -- Ingress path type
+  pathType: Prefix
+
+# -- We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This also increases chances charts run on environments with little resources, such as Minikube. If you do want to specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after `resources:`.
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# -- Annotations to be added to the deployment
+annotations: {}
+
+# -- Annotations to be added to pod
+podAnnotations: {}
+
+# -- Labels to be added to pod
+podLabels: {}
+
+# -- Labels to be added to the deployment
+extraLabels: {}
+
+# -- NodeSelector configurations. Check [here](https://kubernetes.io/docs/user-guide/node-selection/) for details
+nodeSelector: {}
+
+# -- Tolerations configurations. Check [here](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) for details
+tolerations: []
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule"
+
+# -- Affinity configurations
+affinity: {}
+
+serviceMonitor:
+  # -- Enable deployment of Service Monitor for server component. This is Prometheus operator object
+  enabled: false
+  # -- Service Monitor labels
+  extraLabels: {}
+  # -- Service Monitor annotations
+  annotations: {}
+  # -- Service Monitor relabelings
+  relabelings: []
+  # -- Basic auth params for Service Monitor
+  basicAuth: {}
+  # -- Service Monitor metricRelabelings
+  metricRelabelings: []
+#    interval: 15s
+#    scrapeTimeout: 5s
+  # -- Commented. HTTP scheme to use for scraping.
+#    scheme: https
+  # -- Commented. TLS configuration to use when scraping the endpoint
+#    tlsConfig:
+#      insecureSkipVerify: true
+
+# -- Use existing secret if specified otherwise .config values will be used. Check [here](https://docs.victoriametrics.com/vmauth) for details.
+# Configuration in the given secret must be stored under `auth.yml` key.
+secretName: ""
+
+# -- Config file content.
+config:
+  # Arbitrary number of usernames may be put here.
+  # Usernames must be unique.
+  # users:
+    # The user for querying local single-node VictoriaMetrics.
+    # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
+    # will be routed to http://localhost:8428 .
+    # For example, http://vmauth:8427/api/v1/query is routed to http://localhost:8428/api/v1/query
+    #  - username: "local-single-node"
+    #    password: "***"
+    #    url_prefix: "http://localhost:8428"
+
+    # The user for querying account 123 in VictoriaMetrics cluster
+    # See https://github.com/VictoriaMetrics/VictoriaMetrics/blob/cluster/README.md#url-format
+    # All the requests to http://vmauth:8427 with the given Basic Auth (username:password)
+    # will be routed to http://vmselect:8481/select/123/prometheus .
+    # For example, http://vmauth:8427/api/v1/query is routed to http://vmselect:8481/select/123/prometheus/api/v1/select
+    #  - username: "cluster-select-account-123"
+    #    password: "***"
+    #    url_prefix: "http://vmselect:8481/select/123/prometheus"
+
+    # The user for inserting Prometheus data into VictoriaMetrics cluster under account 42
+    # See https://github.com/VictoriaMetrics/VictoriaMetrics/blob/cluster/README.md#url-format
+    # All the reuqests to http://vmauth:8427 with the given Basic Auth (username:password)
+    # will be routed to http://vminsert:8480/insert/42/prometheus .
+    # For example, http://vmauth:8427/api/v1/write is routed to http://vminsert:8480/insert/42/prometheus/api/v1/write
+    # - username: "cluster-insert-account-42"
+    #    password: "***"
+    #    url_prefix: "http://vminsert:8480/insert/42/prometheus"
+
+# -- Add extra specs dynamically to this chart
+extraObjects: []
+
+probe:
+  # -- Readiness probe
+  readiness:
+    tcpSocket: {}
+    initialDelaySeconds: 5
+    periodSeconds: 15
+  # -- Liveness probe
+  liveness:
+    tcpSocket: {}
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    timeoutSeconds: 5
+  # -- Startup probe
+  startup: {}
+
+# -- Enterprise license key configuration for VictoriaMetrics enterprise.
+# Required only for VictoriaMetrics enterprise. Check docs [here](https://docs.victoriametrics.com/enterprise),
+# for more information, visit [site](https://victoriametrics.com/products/enterprise/).
+# Request a trial license [here](https://victoriametrics.com/products/enterprise/trial/)
+# Supported starting from VictoriaMetrics v1.94.0
+license:
+  # -- License key
+  key: ""
+
+  # -- Use existing secret with license key
+  secret:
+    # -- Existing secret name
+    name: ""
+    # -- Key in secret with license key
+    key: ""
