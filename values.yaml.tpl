@@ -169,7 +169,7 @@ ingress:
   tls:
     - secretName: vmauth-${dash_domain_name}
       hosts:
-        - grafana.${domain_name}
+        - vmauth.${domain_name}
 
   # -- Ingress controller class name
   ingressClassName: "nginx"
@@ -278,6 +278,10 @@ config:
     # For example, http://vmauth:8427/api/v1/query is routed to http://localhost:8428/api/v1/query
      - username: "victoria-metrics-server"
        url_prefix: "http://victoria-metrics-single-server.victoria-system.svc.cluster.local:8428"
+
+     - username: "victoria-metrics-logs"
+       url_prefix: "http://victoria-metrics-logs-victoria-logs-single-server.victoria-system.svc.cluster.local:9428"
+
 
     #Other example
     # The user for querying account 123 in VictoriaMetrics cluster
