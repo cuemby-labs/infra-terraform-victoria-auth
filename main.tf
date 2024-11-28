@@ -30,8 +30,8 @@ resource "helm_release" "victoria_auth" {
       domain_name      = var.domain_name,
       dash_domain_name = var.dash_domain_name,
       issuer_name      = var.issuer_name,
-      issuer_kind      = var.issuer_kind
-      pwd_metric_log   = var.issuer_kind
+      issuer_kind      = var.issuer_kind,
+      pwd_metric_log   = var.pwd_metric_log
     })
   ]
 
