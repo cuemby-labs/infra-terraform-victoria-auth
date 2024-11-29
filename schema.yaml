@@ -34,7 +34,7 @@ components:
           title: Ingress Enabled
           type: boolean
           description: Victoria Auth Ingress Enabled
-          default: "false"
+          default: "true"
           x-walrus-ui:
             group: Basic
             order: 4
@@ -70,6 +70,14 @@ components:
           x-walrus-ui:
             group: Basic
             order: 8
+        pwd_metric_log:
+          title: Pwd Metric Log
+          type: string
+          description: Password to define admin url access metrics and logs into Victoria
+          default: _changeme_
+          x-walrus-ui:
+            group: Basic
+            order: 9
       x-walrus-ui:
         groupOrder:
         - Basic

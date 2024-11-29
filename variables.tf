@@ -50,6 +50,12 @@ variable "issuer_kind" {
   default     = "ClusterOriginIssuer"
 }
 
+# Victoria Config_User
+variable "pwd_metric_log" {
+  type        = string
+  description = "Password to define admin url access metrics and logs into Victoria"
+  default     = "_changeme_"
+}
 
 #
 # Contextual Fields
