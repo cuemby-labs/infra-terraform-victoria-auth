@@ -278,7 +278,7 @@ config:
     # For example, http://vmauth:8427/api/v1/query is routed to http://localhost:8428/api/v1/query
      - username: "victoria-metrics-server"
        password: ${pwd_metric_log}
-       url_prefix: "http://victoria-metrics-single-server.victoria-system.svc.cluster.local:8428"
+       url_prefix: "http://victoria-metrics.victoria-system.svc.cluster.local:8428"
 
      - username: "victoria-metrics-logs"
        url_prefix: "http://victoria-metrics-logs-victoria-logs-single-server.victoria-system.svc.cluster.local:9428"
