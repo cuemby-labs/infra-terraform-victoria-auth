@@ -6,7 +6,7 @@ config:
      - username: "victoria-metrics-logs"
        url_prefix: "http://victoria-metrics-logs-victoria-logs-single-server.victoria-system.svc.cluster.local:9428"
        password: ${pwd_metric_log}
-  ingress:
+ingress:
   enabled: ${ingress_enabled}
   annotations:
     cert-manager.io/issuer: ${issuer_name}
