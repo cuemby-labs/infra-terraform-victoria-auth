@@ -29,7 +29,7 @@ resource "helm_release" "victoria_auth" {
     templatefile("${path.module}/values.yaml.tpl", {
       ingress_enabled    = var.ingress_enabled,
       domain_name        = var.domain_name,
-      dash_domain_name   = locals.dash_domain_name,
+      dash_domain_name   = local.dash_domain_name,
       issuer_name        = var.issuer_name,
       issuer_kind        = var.issuer_kind,
       ingress_class_name = var.ingress_class_name,
