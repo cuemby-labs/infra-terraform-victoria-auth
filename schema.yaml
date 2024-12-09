@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: OpenAPI schema for template .
+  title: OpenAPI schema for Victoria Metrics Auth template .
 components:
   schemas:
     variables:
@@ -26,31 +26,44 @@ components:
           title: Helm Chart Version
           type: string
           description: The version of the victoria-metrics-auth Helm chart.
-          default: 0.4.13
+          default: 0.8.0
           x-walrus-ui:
             group: Basic
             order: 3
+        resources:
+          title: Resources
+          type: object
+          description: Resource limits and requests for the Helm release.
+          default:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          additionalProperties:
+            additionalProperties:
+              type: string
+            type: object
+            x-walrus-ui:
+              colSpan: 12
+          x-walrus-ui:
+            colSpan: 12
+            group: Basic
+            order: 4
         ingress_enabled:
           title: Ingress Enabled
           type: boolean
           description: Victoria Auth Ingress Enabled
-          default: "false"
+          default: "true"
           x-walrus-ui:
             group: Basic
-            order: 4
+            order: 5
         domain_name:
           title: Domain Name
           type: string
           description: Domain name for Victoria Auth, e.g. 'dev.domainname.com'
           default: dev.domainname.com
-          x-walrus-ui:
-            group: Basic
-            order: 5
-        dash_domain_name:
-          title: Dash Domain Name
-          type: string
-          description: Domain name with dash, e.g. 'dev-domainname-com'
-          default: dev-domainname-com
           x-walrus-ui:
             group: Basic
             order: 6
@@ -70,6 +83,14 @@ components:
           x-walrus-ui:
             group: Basic
             order: 8
+        ingress_class_name:
+          title: Ingress Class Name
+          type: string
+          description: Ingress Class Name
+          default: nginx
+          x-walrus-ui:
+            group: Basic
+            order: 9
       x-walrus-ui:
         groupOrder:
         - Basic
