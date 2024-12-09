@@ -1,4 +1,12 @@
-ingress:
+config:
+  users:
+     - username: "victoria-metrics-server"
+       password: ${pwd_metric_log}
+       url_prefix: "http://victoria-metrics.victoria-system.svc.cluster.local:8428"
+     - username: "victoria-metrics-logs"
+       url_prefix: "http://victoria-metrics-logs-victoria-logs-single-server.victoria-system.svc.cluster.local:9428"
+       password: ${pwd_metric_log}
+  ingress:
   enabled: ${ingress_enabled}
   annotations:
     cert-manager.io/issuer: ${issuer_name}

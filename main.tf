@@ -33,6 +33,7 @@ resource "helm_release" "victoria_auth" {
       issuer_name        = var.issuer_name,
       issuer_kind        = var.issuer_kind,
       ingress_class_name = var.ingress_class_name,
+      pwd_metric_log     = var.pwd_metric_log,
       request_memory     = var.resources["requests"]["memory"],
       limits_memory      = var.resources["limits"]["memory"],
       request_cpu        = var.resources["requests"]["cpu"],

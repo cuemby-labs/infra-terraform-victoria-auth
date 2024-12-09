@@ -69,6 +69,12 @@ variable "ingress_class_name" {
   default     = "nginx"
 }
 
+variable "pwd_metric_log" {
+  type        = string
+  description = "Password to define admin url access metrics and logs into Victoria"
+  sensitive   = true
+  default     = "change_me"
+}
 
 #
 # Contextual Fields

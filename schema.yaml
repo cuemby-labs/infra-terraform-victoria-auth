@@ -91,6 +91,16 @@ components:
           x-walrus-ui:
             group: Basic
             order: 9
+        pwd_metric_log:
+          title: Pwd Metric Log
+          type: string
+          description: Password to define admin url access metrics and logs into Victoria
+          default: change_me
+          format: password
+          writeOnly: true
+          x-walrus-ui:
+            group: Basic
+            order: 10
       x-walrus-ui:
         groupOrder:
         - Basic
