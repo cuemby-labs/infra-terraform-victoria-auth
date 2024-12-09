@@ -17,10 +17,29 @@ variable "namespace_name" {
 variable "helm_chart_version" {
   description = "The version of the victoria-metrics-auth Helm chart."
   type        = string
-  default     = "0.4.13"
+  default     = "0.8.0"
 }
 
+variable "resources" {
+  description = "Resource limits and requests for the Helm release."
+  type        = map(map(string))
+
+  default = {
+    limits = {
+      cpu    = "200m"
+      memory = "256Mi"
+    }
+    requests = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+  }
+}
+
+#
 # Victoria Auth Ingress
+#
+
 variable "ingress_enabled" {
   type        = bool
   description = "Victoria Auth Ingress Enabled"
@@ -30,12 +49,6 @@ variable "domain_name" {
   type        = string
   description = "Domain name for Victoria Auth, e.g. 'dev.domainname.com'"
   default     = "dev.domainname.com"
-}
-
-variable "dash_domain_name" {
-  type        = string
-  description = "Domain name with dash, e.g. 'dev-domainname-com'"
-  default     = "dev-domainname-com"
 }
 
 variable "issuer_name" {
@@ -48,6 +61,12 @@ variable "issuer_kind" {
   type        = string
   description = "Origin issuer kind"
   default     = "ClusterOriginIssuer"
+}
+
+variable "ingress_class_name" {
+  type        = string
+  description = "Ingress Class Name"
+  default     = "nginx"
 }
 
 
