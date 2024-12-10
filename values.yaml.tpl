@@ -16,18 +16,18 @@ ingress:
     external-dns.alpha.kubernetes.io/hostname: vmauth.${domain_name}
   hosts:
     - name: vmauth.${domain_name}
-      path:
-        - /
+      path: /
       port: http
   tls:
     - secretName: vmauth-${dash_domain_name}
       hosts:
         - vmauth.${domain_name}
   ingressClassName: ${ingress_class_name}
+  pathType: Prefix
 resources:
-    limits:
-      cpu: ${limits_cpu}
-      memory: ${limits_memory}
-    requests:
-      cpu: ${request_cpu}
-      memory: ${request_memory}
+  limits:
+    cpu: ${limits_cpu}
+    memory: ${limits_memory}
+  requests:
+    cpu: ${request_cpu}
+    memory: ${request_memory}
