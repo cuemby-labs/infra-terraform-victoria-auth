@@ -26,7 +26,7 @@ ingress:
   tls:
     - secretName: vmauth-${dash_domain_name}
       hosts:
-        - grafana.${domain_name}
+        - vmauth.${domain_name}
   ingressClassName: ${ingress_class_name}
 resources:
     limits:
