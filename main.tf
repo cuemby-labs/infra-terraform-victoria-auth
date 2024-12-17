@@ -2,14 +2,12 @@
 # Victoria Metrics Resources
 #
 
-# Validar si el namespace ya existe
 data "kubernetes_namespace" "victoria_system" {
   metadata {
     name = var.namespace_name
   }
 }
 
-# Crear el namespace solo si no existe
 resource "kubernetes_namespace" "victoria_system" {
   metadata {
     name = var.namespace_name
@@ -17,7 +15,6 @@ resource "kubernetes_namespace" "victoria_system" {
   count = length(data.kubernetes_namespace.victoria_system.id) == 0 ? 1 : 0
 }
 
-# Instalar Helm chart
 resource "helm_release" "victoria_auth" {
   name       = var.helm_release_name
   namespace  = var.namespace_name
@@ -42,6 +39,33 @@ resource "helm_release" "victoria_auth" {
   ]
 
   depends_on = [kubernetes_namespace.victoria_system]
+}
+
+#
+# HPA
+#
+
+data "template_file" "hpa_manifest_template" {
+  
+  template = file("${path.module}/hpa.yaml.tpl")
+  vars     = {
+    namespace_name            = var.namespace_name,
+    auth_operator_name        = "${helm_release.victoria_auth.name}",
+    min_replicas              = var.hpa_config.min_replicas,
+    max_replicas              = var.hpa_config.max_replicas,
+    target_cpu_utilization    = var.hpa_config.target_cpu_utilization,
+    target_memory_utilization = var.hpa_config.target_memory_utilization
+  }
+}
+
+data "kubectl_file_documents" "hpa_manifest_files" {
+
+  content = data.template_file.hpa_manifest_template.rendered
+}
+
+resource "kubectl_manifest" "apply_manifests" {
+  for_each  = data.kubectl_file_documents.hpa_manifest_files.manifests
+  yaml_body = each.value
 }
 
 #
