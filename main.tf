@@ -50,7 +50,7 @@ data "template_file" "hpa_manifest_template" {
   template = file("${path.module}/hpa.yaml.tpl")
   vars     = {
     namespace_name            = var.namespace_name,
-    auth_operator_name        = "${helm_release.victoria_auth.name}",
+    auth_operator_name        = var.helm_release_name,
     min_replicas              = var.hpa_config.min_replicas,
     max_replicas              = var.hpa_config.max_replicas,
     target_cpu_utilization    = var.hpa_config.target_cpu_utilization,
