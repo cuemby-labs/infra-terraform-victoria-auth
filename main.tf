@@ -59,7 +59,6 @@ data "template_file" "hpa_manifest_template" {
 }
 
 data "kubectl_file_documents" "hpa_manifest_files" {
-
   content = data.template_file.hpa_manifest_template.rendered
 }
 
