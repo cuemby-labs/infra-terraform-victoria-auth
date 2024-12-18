@@ -66,6 +66,12 @@ data "kubectl_file_documents" "hpa_manifest_files" {
 resource "kubectl_manifest" "apply_manifests" {
   for_each  = data.kubectl_file_documents.hpa_manifest_files.manifests
   yaml_body = each.value
+
+  lifecycle {
+    ignore_changes = [yaml_body]
+  }
+
+  depends_on = [data.kubectl_file_documents.hpa_manifest_files]
 }
 
 #
